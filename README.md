@@ -2,6 +2,8 @@
 
 This is the project code for PrivTrace: Differentially Private Trajectory Synthesis by Adaptive Markov Model
 
+**Original Repository**: https://github.com/DpTrace/PrivTrace
+
 Instructions:
 
 1.install and use anaconda
