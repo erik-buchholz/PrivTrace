@@ -1,7 +1,8 @@
-import numpy as np
 import os
 import re
+
 import config.folder_and_file_names as config
+import numpy as np
 
 
 class DataReader:
@@ -17,7 +18,7 @@ class DataReader:
     #
     def read_tra_data(self, file_name):
         trajectory_list = []
-        f = open(file_name, 'r+')
+        f = open(file_name, 'r')
         for line in f.readlines():
             if line[0] == '>':
                 trajectory_data_carrier = line[3:]

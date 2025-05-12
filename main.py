@@ -1,14 +1,15 @@
-import config.folder_and_file_names as fname
 from discretization.get_discretization import DisData
-from primarkov.build_markov_model import ModelBuilder
-from generator.state_trajectory_generation import StateGeneration
-from generator.to_real_translator import RealLocationTranslator
+import datetime
+
 # from tools.object_store import ObjectStore
 from config.parameter_carrier import ParameterCarrier
 from config.parameter_setter import ParSetter
-from tools.data_writer import DataWriter
 from data_preparation.data_preparer import DataPreparer
-import datetime
+from discretization.get_discretization import DisData
+from generator.state_trajectory_generation import StateGeneration
+from generator.to_real_translator import RealLocationTranslator
+from primarkov.build_markov_model import ModelBuilder
+from tools.data_writer import DataWriter
 
 if __name__ == "__main__":
     writer = DataWriter()
@@ -28,7 +29,7 @@ if __name__ == "__main__":
     st_tra_list = sg1.generate_tra(mo1)
     rlt1 = RealLocationTranslator(pc)
     real_tra_list = rlt1.translate_trajectories(grid, st_tra_list)
-    writer.save_trajectory_data_in_list_to_file(real_tra_list, fname.result_file_name)
+    writer.save_trajectory_data_in_list_to_file(real_tra_list, par['output'])
     print('end all')
     print(datetime.datetime.now())
     pass
