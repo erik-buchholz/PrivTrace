@@ -98,7 +98,7 @@ class GuidePost:
         noisy_matrix[:, self.start_state] = np.zeros(self.all_state_number)
         noisy_matrix[self.end_state, :] = np.zeros(self.all_state_number)
         noisy_matrix = noise1.positive_regulation_for_markov_matrix(noisy_matrix)
-        self.order2_trans_matrix = noisy_matrix.astype(np.int)
+        self.order2_trans_matrix = noisy_matrix.astype(int)
 
     #
     def give_total_ends_value(self):

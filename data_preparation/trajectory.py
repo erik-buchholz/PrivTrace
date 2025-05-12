@@ -10,8 +10,8 @@ class Trajectory:
         self.trajectory_index = -1
         # calculate number of  points in a trajctory
         self.point_number = 0
-        # define a list to store index of cells and subcells that points are in in the trajectory
-        self.trajectory_cell_list = np.array([], dtype=np.int)
+        # define a list to store index of cells and subcells that points are in the trajectory
+        self.trajectory_cell_list = np.array([], dtype=int)
         self.level1_cell_index_sequence = np.array([], dtype=int)
         self.level2_cell_index_sequence = np.array([], dtype=int)
         self.cell_sequence = np.array([], dtype=int)

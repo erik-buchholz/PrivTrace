@@ -35,7 +35,7 @@ class Generator:
         self.average_length = np.average(
             self.markov_model.grid.level2_subdividing_parameter) + self.markov_model.grid.level1_cell_number / 2
         subdividing_para = np.sort(self.markov_model.grid.level2_subdividing_parameter)
-        # i = np.int(np.floor(subdividing_para.size / 3))
+        # i = int(np.floor(subdividing_para.size / 3))
         self.average_subdividing_number = np.average(subdividing_para[-5:])
         self.level1_length_threshold()
         self.simple_whole_trajectory_len_threshold(self.level1_length_threshold_value)
@@ -137,7 +137,7 @@ class Generator:
         grid = self.markov_model.grid
         level1_state_number = grid.level1_cell_number
         level1_para = np.sqrt(level1_state_number)
-        threshold = np.int(np.floor(level1_para * 0.8))
+        threshold = int(np.floor(level1_para * 0.8))
         if threshold < 0:
             threshold = 0
         self.level1_length_threshold_value = threshold
@@ -145,8 +145,8 @@ class Generator:
     def simple_whole_trajectory_len_threshold(self, level1_len_threshold):
         # grid = self.markov_model.grid
         average_subdividing_number = self.average_subdividing_number
-        # whole_threshold = np.int(np.ceil(average_subdividing_number)) * 1.5
-        whole_threshold = np.int(np.ceil(average_subdividing_number))
+        # whole_threshold = int(np.ceil(average_subdividing_number)) * 1.5
+        whole_threshold = int(np.ceil(average_subdividing_number))
         if whole_threshold < level1_len_threshold:
             whole_threshold = level1_len_threshold
         self.simple_level2_length_threshold_value = whole_threshold
@@ -335,9 +335,9 @@ class Generator:
             neighbors_of_this_step = grid.subcell_neighbors_usable_index[this_step]
             weights = self.total_in_degree[neighbors_of_this_step]
             if np.sum(weights) == 0:
-                this_step1 = np.int(gt1.random_pick_element(neighbors_of_this_step))
+                this_step1 = int(gt1.random_pick_element(neighbors_of_this_step))
             else:
-                this_step1 = np.int(np.random.choice(neighbors_of_this_step, p=weights / np.sum(weights)))
+                this_step1 = int(np.random.choice(neighbors_of_this_step, p=weights / np.sum(weights)))
         else:
             this_step1 = gt1.draw_by_probability_without_an_element(candidates, probability, -2)
         pass

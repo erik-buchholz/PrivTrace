@@ -21,8 +21,8 @@ class Divide:
             para = divide_threshold
         x_divide_number = para
         y_divide_number = para
-        x_divide_number = np.int(x_divide_number)
-        y_divide_number = np.int(y_divide_number)
+        x_divide_number = int(x_divide_number)
+        y_divide_number = int(y_divide_number)
         x_increase = 1 / x_divide_number * (rig - lef)
         y_increase = 1 / y_divide_number * (top - bot)
         divide_parameter1 = np.array([x_divide_number, y_divide_number, x_increase, y_increase])
@@ -30,7 +30,7 @@ class Divide:
 
     def subdividing_parameter(self, noisy_density):
         initial_parameter = 200
-        subdivide_parameter1 = np.int(np.ceil(np.sqrt(noisy_density / initial_parameter)))
+        subdivide_parameter1 = int(np.ceil(np.sqrt(noisy_density / initial_parameter)))
         return subdivide_parameter1
 
 

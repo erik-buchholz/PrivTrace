@@ -438,7 +438,7 @@ class Grid:
         subdividing_parameter = self.get_level2_parameter()
         subdividing_cell_number = subdividing_parameter ** 2
         cell_number = np.sum(subdividing_cell_number)
-        cell_number = np.int(cell_number)
+        cell_number = int(cell_number)
         self.initializing_subdividing_parameter(cell_number)
         subcell_index = 0
         for level1_cell_index in range(subdividing_parameter.size):
