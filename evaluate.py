@@ -1,6 +1,7 @@
 """Evaluation Code."""
 
 import datetime
+import multiprocessing
 from pathlib import Path
 from timeit import default_timer as timer
 
@@ -23,6 +24,7 @@ DATASETS = ["PORTO", "GEOLIFE"]
 N_FOLDS = 5
 N_TRAJS = 3000
 EPSILON = 10.0
+epsilons = [10.0]
 
 
 def run(dataset: str, fold: int, epsilon: float = EPSILON):
@@ -71,10 +73,22 @@ def run(dataset: str, fold: int, epsilon: float = EPSILON):
 
 
 if __name__ == "__main__":
+    processes = []
+
     for dataset in DATASETS:
         for fold in range(N_FOLDS):
-            run(
-                dataset=dataset,
-                fold=fold,
-                epsilon=EPSILON,
-            )
+            for epsilon in epsilons:
+                p = multiprocessing.Process(
+                    target=run,
+                    kwargs={
+                        "dataset": dataset,
+                        "fold": fold,
+                        "epsilon": epsilon,
+                    },
+                )
+                processes.append(p)
+                print(f"Starting process for {dataset} fold {fold} with epsilon {epsilon}.")
+                p.start()
+
+    for p in processes:
+        p.join()
