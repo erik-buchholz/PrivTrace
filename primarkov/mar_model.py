@@ -60,7 +60,7 @@ class MarkovModel:
         trajectory_array = trajectory1.usable_simple_sequence
         markov_matrix = np.zeros((state_number, state_number))
         trajectory_length = trajectory_array.size
-        for markov_transform_start in range(trajectory_length - 1):
+        for markov_transform_start in tqdm(range(trajectory_length - 1), desc="Processing trajectory steps"):
             this_step_start_state = trajectory_array[markov_transform_start]
             this_step_end_state = trajectory_array[markov_transform_start + 1]
             markov_matrix[this_step_start_state, this_step_end_state] += 1
@@ -84,7 +84,7 @@ class MarkovModel:
         trajectory_list = trajectory_set.trajectory_list
         print('begin calculating matrix')
         print(datetime.datetime.now())
-        for trajectory1 in tqdm(trajectory_list, description="Calculating Markov Matrix"):
+        for trajectory1 in tqdm(trajectory_list, desc="Calculating Markov Matrix"):
             not_out_of_usable = not trajectory1.has_not_usable_index
             if not_out_of_usable:
                 markov_matrix1 = self.trajectory_markov_probability(trajectory1)
@@ -137,7 +137,7 @@ class MarkovModel:
         index_dict = np.zeros(self.all_state_number, dtype=int) - 1
         sensitive_indices = self.guidepost_indices
         gp_counter = 0
-        for index in sensitive_indices:
+        for index in tqdm(sensitive_indices, desc="Setting up guideposts"):
             if_sensitive = self.guidepost_indicator[index]
             if if_sensitive:
                 guidepost1 = GuidePost(index, self.cc)
@@ -150,10 +150,10 @@ class MarkovModel:
 
     #
     def give_guidepost_order2_info(self, trajectory_set1: TrajectorySet):
-        for trajectory1 in trajectory_set1.trajectory_list:
+        for trajectory1 in tqdm(trajectory_set1.trajectory_list, desc="Processing guidepost order 2 info"):
             sequence = trajectory1.usable_simple_sequence
             trajectory_length = sequence.size
-            for index_in_sequence in range(sequence.size):
+            for index_in_sequence in tqdm(range(sequence.size), desc="Processing trajectory sequence"):
                 state_now = sequence[index_in_sequence]
                 if index_in_sequence == 0:
                     state_previous = 'start'
@@ -176,10 +176,10 @@ class MarkovModel:
         subcell_number = self.subcell_number
         neighbors = grid.subcell_neighbors_usable_index
         matrix = np.empty((subcell_number, subcell_number), dtype=bool)
-        for subcell_index1 in range(subcell_number):
+        for subcell_index1 in tqdm(range(subcell_number), desc="Building neighboring matrix"):
             for subcell_index2 in range(subcell_number):
                 matrix[subcell_index1, subcell_index2] = False
-        for subcell_index in range(subcell_number):
+        for subcell_index in tqdm(range(subcell_number), desc="Processing neighbors"):
             neeighbors_of_this_subcell = neighbors[subcell_index]
             for neighbor in neeighbors_of_this_subcell:
                 matrix[subcell_index, neighbor] = True
@@ -263,7 +263,7 @@ class MarkovModel:
     def give_level1_length_thresholds(self):
         all_usable_state_number = self.grid.usable_state_number
         self.level1_length_threshold = np.empty(all_usable_state_number)
-        for state_i in range(all_usable_state_number):
+        for state_i in tqdm(range(all_usable_state_number), desc="Calculating level 1 length thresholds"):
             # if self.cc.optimization_on:
             distribution_weights = self.optimized_start_end_distribution[state_i, :]
             # else:
@@ -305,7 +305,7 @@ class MarkovModel:
     #
     def give_whole_length_thresholds(self):
         all_usable_state_number = self.grid.usable_state_number
-        for i in range(all_usable_state_number):
+        for i in tqdm(range(all_usable_state_number), desc="Calculating whole length thresholds"):
             if np.sum(self.optimized_start_end_distribution[i, :]) <= 0:
                 self.whole_length_thresholds.append(False)
             else:
