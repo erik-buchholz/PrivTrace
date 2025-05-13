@@ -10,7 +10,7 @@ from primarkov.guidepost import GuidePost
 from primarkov.sensitive_filter import Filter
 from primarkov.start_end_calibrator import StartEndCalibrator
 from tools.noise import Noise
-from tqdm import tqdm
+from tqdm import tqdm, trange
 
 log = logging.getLogger(__name__)
 
@@ -192,12 +192,12 @@ class MarkovModel:
 
     #
     def add_noise_to_guidepost(self):
-        for guidepost in self.guidepost_set:
+        for guidepost in tqdm(self.guidepost_set, desc="Adding noise to guideposts"):
             guidepost.add_noise()
 
     #
     def order1_and_2_end_consistency(self):
-        for gp in self.guidepost_set:
+        for gp in tqdm(self.guidepost_set, desc="Ensuring order 1 and 2 consistency"):
             index_of_gp = gp.this_state
             order1_end_value = self.noisy_markov_matrix[index_of_gp, -1]
             order2_end_value = gp.give_total_ends_value()
@@ -218,8 +218,8 @@ class MarkovModel:
         self.noisy_markov_matrix[inner_end_index_to_usable, -1] = self.noisy_markov_matrix[inner_end_index_to_usable, -1] * 1.3
         self.optimized_start_end_distribution = np.zeros(
             (self.grid.usable_state_number, self.grid.usable_state_number))
-        for inner_row_index in range(inner_start_index_to_usable.size):
-            for inner_column_index in range(inner_end_index_to_usable.size):
+        for inner_row_index in trange(inner_start_index_to_usable.size, desc="Inner Row"):
+            for inner_column_index in trange(inner_end_index_to_usable.size, desc="Inner Column"):
                 row_index = inner_start_index_to_usable[inner_row_index]
                 column_index = inner_end_index_to_usable[inner_column_index]
                 distribution_value = optimized_distribution[inner_row_index, inner_column_index]
