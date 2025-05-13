@@ -31,7 +31,7 @@ def run(dataset: str, fold: int, epsilon: float = EPSILON):
     # Copy of main.py
 
     input_filename = f"{dataset}_{fold}.dat"
-    output_filename = f"{dataset}_e{epsilon:.1f}_{fold}_output.dat"
+    output_filename = f"{dataset}_e{epsilon:.1f}_{fold:02d}_output.dat"
 
     # Start Timer
     start = timer()
@@ -76,7 +76,7 @@ if __name__ == "__main__":
     processes = []
 
     for dataset in DATASETS:
-        for fold in range(N_FOLDS):
+        for fold in range(1, N_FOLDS+1):
             for epsilon in epsilons:
                 p = multiprocessing.Process(
                     target=run,
