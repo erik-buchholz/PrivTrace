@@ -60,7 +60,7 @@ class MarkovModel:
         trajectory_array = trajectory1.usable_simple_sequence
         markov_matrix = np.zeros((state_number, state_number))
         trajectory_length = trajectory_array.size
-        for markov_transform_start in tqdm(range(trajectory_length - 1), desc="Processing trajectory steps"):
+        for markov_transform_start in range(trajectory_length - 1):
             this_step_start_state = trajectory_array[markov_transform_start]
             this_step_end_state = trajectory_array[markov_transform_start + 1]
             markov_matrix[this_step_start_state, this_step_end_state] += 1
