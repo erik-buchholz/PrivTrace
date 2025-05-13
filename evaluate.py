@@ -29,7 +29,7 @@ epsilons = [10.0]
 # Set up log
 logging.basicConfig(
     format="%(asctime)s - [%(levelname)s]: %(message)s",
-    level=logging.INFO,
+    level=logging.DEBUG if DEBUG else logging.INFO,
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 log = logging.getLogger(__name__)
@@ -72,9 +72,9 @@ def run(dataset: str, fold: int, epsilon: float = EPSILON) -> None:
     log.info("Markov model building finished")
     mb1 = ModelBuilder(pc)
     mo1 = mb1.filter_model(trajectory_set, grid, mo1)
+    log.info("Markov model filtering finished")
 
     # Step 3: Generate Trajectories
-    log.info("Markov model filtering finished")
     sg1 = StateGeneration(pc)
     st_tra_list = sg1.generate_tra(mo1)
     log.info("State trajectory generation finished")

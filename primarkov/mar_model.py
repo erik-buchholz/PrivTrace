@@ -1,16 +1,18 @@
+import datetime
+import logging
+
 import numpy as np
-import config.folder_and_file_names as config
 from config.parameter_carrier import ParameterCarrier
 from data_preparation.trajectory import Trajectory
 from data_preparation.trajectory_set import TrajectorySet
 from discretization.grid import Grid
-from tools.noise import Noise
-from primarkov.sensitive_filter import Filter
 from primarkov.guidepost import GuidePost
+from primarkov.sensitive_filter import Filter
 from primarkov.start_end_calibrator import StartEndCalibrator
-import datetime
-import copy
+from tools.noise import Noise
+from tqdm import tqdm
 
+log = logging.getLogger(__name__)
 
 class MarkovModel:
 
@@ -82,7 +84,7 @@ class MarkovModel:
         trajectory_list = trajectory_set.trajectory_list
         print('begin calculating matrix')
         print(datetime.datetime.now())
-        for trajectory1 in trajectory_list:
+        for trajectory1 in tqdm(trajectory_list, description="Calculating Markov Matrix"):
             not_out_of_usable = not trajectory1.has_not_usable_index
             if not_out_of_usable:
                 markov_matrix1 = self.trajectory_markov_probability(trajectory1)
@@ -330,19 +332,37 @@ class MarkovModel:
 
     def model_building(self, trajectory_set1: TrajectorySet, grid: Grid) -> None:
         self.set_up_for_model(grid)
+        log.debug("Model setup completed.")
+
         self.give_neighboring_matrix(grid)
+        log.debug("Neighboring matrix generated.")
+
         self.calculate_markov_probability(trajectory_set1)
+        log.debug("Markov probability calculated.")
+
         self.noisy_markov()
-        pass
+        log.debug("Noisy Markov matrix generated.")
 
     #
     def model_filtering(self, trajectory_set1: TrajectorySet, grid: Grid):
         self.start_end_trip_distribution_calibration()
+        log.debug("Start-end trip distribution calibration completed.")
+
         self.give_level1_length_thresholds()
+        log.debug("Level 1 length thresholds generated.")
+
         self.get_sensitive_state()
+        log.debug("Sensitive states identified.")
+
         self.set_up_guideposts(grid)
+        log.debug("Guideposts set up.")
+
         self.give_guidepost_order2_info(trajectory_set1)
+        log.debug("Guidepost order 2 information added.")
+
         self.add_noise_to_guidepost()
+        log.debug("Noise added to guideposts.")
+
         self.order1_and_2_end_consistency()
-        pass
+        log.debug("Order 1 and 2 end consistency ensured.")
 
