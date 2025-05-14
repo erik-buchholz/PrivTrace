@@ -40,8 +40,17 @@ log = logging.getLogger(__name__)
 def run(dataset: str, fold: int, epsilon: float = EPSILON) -> None:
     # Copy of main.py
 
+    # Log to file
+    basename= f"{dataset}_e{epsilon:.1f}_{fold:02d}"
+    log_filename = Path("logs") / f"{basename}.log"
+    file_handler = logging.FileHandler(log_filename)
+    file_handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter("%(asctime)s - [%(levelname)s]: %(message)s")
+    file_handler.setFormatter(formatter)
+    log.addHandler(file_handler)
+
     input_filename = f"{dataset}_{fold}.dat"
-    output_filename = f"{dataset}_e{epsilon:.1f}_{fold:02d}_output.dat"
+    output_filename = f"{basename}_output.dat"
 
     # Start Timer
     start = timer()
