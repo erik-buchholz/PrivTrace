@@ -137,5 +137,5 @@ if __name__ == "__main__":
                     print(f"Starting process for {dataset} fold {fold} with epsilon {epsilon}.")
                     p.start()
 
-    for p in processes:
-        p.join()
+        for p in processes:
+            p.join()
