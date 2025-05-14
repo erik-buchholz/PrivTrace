@@ -51,7 +51,7 @@ def run(dataset: str, fold: int, epsilon: float = EPSILON) -> None:
     log.addHandler(file_handler)
 
     input_filename = f"{dataset}_{fold}.dat"
-    output_filename = f"{basename}_output.dat"
+    output_filename = f"outputs/{basename}_output.dat"
 
     # Start Timer
     start = timer()
