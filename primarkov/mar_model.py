@@ -2,6 +2,8 @@ import datetime
 import logging
 
 import numpy as np
+from tqdm import tqdm, trange
+
 from config.parameter_carrier import ParameterCarrier
 from data_preparation.trajectory import Trajectory
 from data_preparation.trajectory_set import TrajectorySet
@@ -10,7 +12,6 @@ from primarkov.guidepost import GuidePost
 from primarkov.sensitive_filter import Filter
 from primarkov.start_end_calibrator import StartEndCalibrator
 from tools.noise import Noise
-from tqdm import tqdm, trange
 
 log = logging.getLogger(__name__)
 
@@ -60,6 +61,7 @@ class MarkovModel:
         trajectory_array = trajectory1.usable_simple_sequence
         markov_matrix = np.zeros((state_number, state_number))
         trajectory_length = trajectory_array.size
+        #Note: Don't use TQDM here to avoid unnecessary noise - this loop is fast
         for markov_transform_start in range(trajectory_length - 1):
             this_step_start_state = trajectory_array[markov_transform_start]
             this_step_end_state = trajectory_array[markov_transform_start + 1]
@@ -176,10 +178,10 @@ class MarkovModel:
         subcell_number = self.subcell_number
         neighbors = grid.subcell_neighbors_usable_index
         matrix = np.empty((subcell_number, subcell_number), dtype=bool)
-        for subcell_index1 in tqdm(range(subcell_number), desc="Building neighboring matrix"):
+        for subcell_index1 in trange(subcell_number, desc="Building neighboring matrix"):
             for subcell_index2 in range(subcell_number):
                 matrix[subcell_index1, subcell_index2] = False
-        for subcell_index in tqdm(range(subcell_number), desc="Processing neighbors"):
+        for subcell_index in trange(subcell_number, desc="Processing neighbors"):
             neeighbors_of_this_subcell = neighbors[subcell_index]
             for neighbor in neeighbors_of_this_subcell:
                 matrix[subcell_index, neighbor] = True
@@ -209,7 +211,9 @@ class MarkovModel:
         self.shortest_lengths = np.zeros((self.grid.usable_state_number, self.grid.usable_state_number))
         self.large_cell_lengths = np.zeros((self.grid.usable_state_number, self.grid.usable_state_number))
         self.large_trans_with_neighbors()
+        log.debug("Large transition with neighbors calculated. Calibrating distribution...")
         optimized_distribution = sec1.distribution_calibration(self.grid, self.noisy_markov_matrix, self.large_trans_indicator)
+        log.debug("Distribution calibration completed.")
         inner_start_index_to_usable = sec1.non_zero_start_indices
         inner_end_index_to_usable = sec1.non_zero_end_indices
         optimized_start_distribution = np.sum(optimized_distribution, axis=1)
@@ -243,7 +247,7 @@ class MarkovModel:
         len_thre = np.unique(lengths)
         len_thre = len_thre[len_thre > 0]
         keep_weight = np.zeros(len_thre.size)
-        for i in range(len_thre.size):
+        for i in trange(len_thre.size):
             len1 = len_thre[i]
             weight = np.sum(trip_weight[lengths >= len1])
             keep_weight[i] = weight
@@ -282,7 +286,7 @@ class MarkovModel:
     #
     def give_weights_without_optimization(self, start_index):
         weights = np.zeros(self.grid.usable_state_number)
-        for end_index in range(self.grid.usable_state_number):
+        for end_index in trange(self.grid.usable_state_number):
             rough_len = self.level1_length_of_two_usable_state(start_index, end_index)
             weights[end_index] = 1 / rough_len
         return weights

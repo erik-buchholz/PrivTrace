@@ -1,8 +1,8 @@
 import argparse
 
-import config.folder_and_file_names as fname
 import numpy as np
 
+import config.folder_and_file_names as fname
 from tools.utils import printc
 
 
@@ -47,8 +47,10 @@ class ParSetter:
         printc("Total epsilon:", args['total_epsilon'])
         printc("Epsilon partition:", args['epsilon_partition'])
         printc("Trajectory number to generate:", args['trajectory_number_to_generate'])
-        printc("Subdividing inner parameter:", args['subdividing_inner_parameter'])
-        # printc("Level 1 divide inner parameter:", args['level1_divide_inner_parameter'])
+        if 'level1_divide_inner_parameter' in args:
+            printc("Level 1 parameter:", args['level1_divide_inner_parameter'])
+        printc("level2_parameter:", args['subdividing_inner_parameter'])
+
 
         return args
 

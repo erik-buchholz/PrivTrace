@@ -1,12 +1,16 @@
-from config.parameter_carrier import ParameterCarrier
-import numpy as np
-from data_preparation.trajectory_set import TrajectorySet
-from data_preparation.trajectory import Trajectory
-from tools.noise import Noise
-from tools.general_tools import GeneralTools
-from discretization.divide import Divide
 import copy as cop
+import logging
 
+import numpy as np
+
+from config.parameter_carrier import ParameterCarrier
+from data_preparation.trajectory import Trajectory
+from data_preparation.trajectory_set import TrajectorySet
+from discretization.divide import Divide
+from tools.general_tools import GeneralTools
+from tools.noise import Noise
+
+log = logging.getLogger()
 
 class Grid:
 

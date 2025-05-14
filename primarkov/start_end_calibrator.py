@@ -1,14 +1,18 @@
-import numpy as np
-import math
+import logging
+
+import cvxpy as cp
 import networkx as nx
-from discretization.grid import Grid
-import config.folder_and_file_names as config
-# from tools.object_store import ObjectStore
-from tools.general_tools import GeneralTools
-from config.parameter_carrier import ParameterCarrier
+import numpy as np
 import torch
 import torch.optim as optim
-import cvxpy as cp
+from tqdm import trange
+
+from config.parameter_carrier import ParameterCarrier
+from discretization.grid import Grid
+# from tools.object_store import ObjectStore
+from tools.general_tools import GeneralTools
+
+log = logging.getLogger()
 
 
 class StartEndCalibrator:
@@ -39,7 +43,7 @@ class StartEndCalibrator:
         central_point_gps = grid.usable_state_central_points()
         self.state_number = grid.usable_state_number
         self.total_trajectory_number = grid.trajectory_number
-        for state_index in range(self.state_number):
+        for state_index in trange(self.state_number, desc="Setting up distance network"):
             neighbors = grid.usable_state_neighbors(state_index)
             for neighbor_state in neighbors:
                 distance = self.distance_of_central_points(central_point_gps, state_index, neighbor_state)
@@ -51,7 +55,7 @@ class StartEndCalibrator:
         start_state_number = self.non_zero_start_indices.size
         end_state_number = self.non_zero_end_indices.size
         central_point_gps = grid.usable_state_central_points()
-        for inner_start_index in range(start_state_number):
+        for inner_start_index in trange(start_state_number, desc="Setting up direct lengths"):
             for inner_end_index in range(end_state_number):
                 usable_start_index = self.non_zero_start_indices[inner_start_index]
                 usable_end_index = self.non_zero_end_indices[inner_end_index]
@@ -88,17 +92,19 @@ class StartEndCalibrator:
         self.non_zero_start_values = non_zero_start_values
         self.non_zero_end_indices = non_zero_end_indices
         self.non_zero_end_values = non_zero_end_values
+        log.debug(f"Number of start states: {self.state_number}")
         self.all_usable_start_to_inner_indices_dict = gt1.inverse_index_dict(self.state_number, non_zero_start_indices)
         self.all_usable_end_to_inner_indices_dict = gt1.inverse_index_dict(self.state_number, non_zero_end_indices)
         self.calculate_shortest_path_length(grid)
 
     #
     def calculate_shortest_path_length(self, grid: Grid):
+        log.debug("Calculating shortest path lengths.")
         start_state_number = self.non_zero_start_indices.size
         end_state_number = self.non_zero_end_indices.size
         self.inner_indices_shortest_path_lengths = np.zeros((start_state_number, end_state_number)) - 1
         self.inner_indices_shortest_large_cell_paths_lengths = np.zeros((start_state_number, end_state_number)) - 1
-        for inner_start_index in range(start_state_number):
+        for inner_start_index in trange(start_state_number):
             for inner_end_index in range(end_state_number):
                 usable_start_index = self.non_zero_start_indices[inner_start_index]
                 usable_end_index = self.non_zero_end_indices[inner_end_index]
@@ -109,7 +115,7 @@ class StartEndCalibrator:
                 self.inner_indices_shortest_large_cell_paths_lengths[inner_start_index, inner_end_index] = len(
                     large_cell_path)
         self.inner_indices_arithmetic_mean_length = np.empty(self.inner_indices_shortest_path_lengths.shape)
-        for i in range(self.inner_indices_shortest_path_lengths.shape[0]):
+        for i in trange(self.inner_indices_shortest_path_lengths.shape[0]):
             for j in range(self.inner_indices_shortest_path_lengths.shape[1]):
                 self.inner_indices_arithmetic_mean_length[i, j] = \
                     self.expect_length_in_geometric_length_distribution(self.inner_indices_shortest_path_lengths[i, j])
@@ -354,6 +360,7 @@ class StartEndCalibrator:
         constraints = [distribution >= 0,
                        cp.square(cp.sum(distribution) - self.total_trajectory_number) <= loose_parameter ** 2]
         prob = cp.Problem(objective, constraints)
+        log.debug("Starting distribution optimization using cvxpy.")
         try:
             prob.solve(solver=cp.ECOS)
         except:
@@ -379,13 +386,19 @@ class StartEndCalibrator:
         self.setup_calibrator(grid, noisy_matrix, large_trans_indicator)
         divided_distribution = self.distribution_optimization_cvxpy2()
         iter_turns = 0
+        log.debug("Calibrating distribution with loose parameter = 20")
         while (divided_distribution is None) and (iter_turns < 10):
+            log.debug(f"Starting iteration {iter_turns + 1}/10.")
             divided_distribution = self.distribution_optimization_cvxpy2()
             iter_turns = iter_turns + 1
+        if divided_distribution is None:
+            log.debug("Distribution optimization failed. Trying with looser parameter.")
         loose_multiplier = 2
         while divided_distribution is None:
+            log.debug(f"Loose Parameter = {loose_multiplier ** 2}")
             divided_distribution = self.distribution_optimization_cvxpy2(loose_parameter=loose_multiplier ** 2)
             loose_multiplier = loose_multiplier + 1
+        log.info("Distribution optimization finished.")
         non_length_divided_distribution = self.optimized_non_length_divided_distribution(divided_distribution)
         return non_length_divided_distribution
 

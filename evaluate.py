@@ -25,6 +25,8 @@ N_FOLDS = 5
 N_TRAJS = 3000  # Number of trajectories to generate for our evaluation
 EPSILON = 10.0
 epsilons = [10.0]
+level_1_parameter = False
+level_2_parameter = False
 
 # Set up log
 logging.basicConfig(
@@ -51,7 +53,9 @@ def run(dataset: str, fold: int, epsilon: float = EPSILON) -> None:
         dataset_file_name=input_filename,  # Input File
         output_file_name=output_filename,  # Output File
         epsilon=epsilon,  # Final Epsilon (e1 + e2 + e3)
-        out_size=N_TRAJS  # Number of trajectories to generate for our evaluation
+        out_size=N_TRAJS,  # Number of trajectories to generate for our evaluation
+        level1_parameter=level_1_parameter,  # Level 1 parameter
+        level2_parameter=level_2_parameter,  # Level 2 parameter
     )
 
     pc = ParameterCarrier(par)
@@ -65,6 +69,9 @@ def run(dataset: str, fold: int, epsilon: float = EPSILON) -> None:
     disdata1 = DisData(pc)
     grid = disdata1.get_discrete_data(trajectory_set)
     log.info("Discretization finished")
+    log.info(f"Usable State Number: {grid.usable_state_number}")
+    # Print the size of the grid
+    log.info(f"Grid Size: {len(grid.x_divide_bins)}X{len(grid.y_divide_bins)}")
 
     # Step 2: Learn Markov Models
     mb1 = ModelBuilder(pc)
@@ -103,7 +110,7 @@ if __name__ == "__main__":
         # Set logging to debug level
         log.setLevel(logging.DEBUG)
         # Only run geolife dataset with fold 1 and epsilon 10.0
-        run(dataset="GEOLIFE", fold=1, epsilon=10.0)
+        run(dataset="GEOLIFE", fold=6, epsilon=1000.0)
     else:
         processes = []
         for dataset in DATASETS:
