@@ -2,6 +2,7 @@
 import datetime
 import logging
 import multiprocessing
+from argparse import ArgumentParser
 from pathlib import Path
 from timeit import default_timer as timer
 
@@ -19,7 +20,7 @@ from tools.data_writer import DataWriter
 from tools.utils import printc
 
 # CONSTANTS
-DEBUG = True
+DEBUG = False
 DATASETS = ["PORTO", "GEOLIFE"]
 N_FOLDS = 5
 N_TRAJS = 3000  # Number of trajectories to generate for our evaluation
@@ -31,7 +32,7 @@ level_2_parameter = False
 # Set up log
 logging.basicConfig(
     format="%(asctime)s - [%(levelname)s]: %(message)s",
-    level=logging.DEBUG if DEBUG else logging.INFO,
+    level=logging.DEBUG,
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 log = logging.getLogger(__name__)
@@ -114,12 +115,26 @@ def run(dataset: str, fold: int, epsilon: float = EPSILON) -> None:
         df.to_csv(filepath, mode='w', header=True, index=False)
 
 
+def get_parser() -> ArgumentParser:
+    parser = ArgumentParser(description="PrivTrace Evaluation")
+    # Add arguments for dataset, gold and epsilon
+    parser.add_argument('-d', '--dataset', type=str, choices=DATASETS, required=True, help='Dataset to use')
+    parser.add_argument('-f', '--fold', type=int, required=True, help='Fold number')
+    parser.add_argument('-e', '--epsilon', type=float, default=EPSILON, help='Epsilon value')
+    # Enable Manual mode
+    parser.add_argument('-m', '--manual', action='store_true', help='Enable manual mode')
+    return parser
+
+
 if __name__ == "__main__":
+    args = get_parser().parse_args()
     if DEBUG:
         # Set logging to debug level
         log.setLevel(logging.DEBUG)
         # Only run geolife dataset with fold 1 and epsilon 10.0
         run(dataset="GEOLIFE", fold=6, epsilon=1000.0)
+    elif args.manual:
+        run(dataset=args.dataset, fold=args.fold, epsilon=args.epsilon)
     else:
         processes = []
         for dataset in DATASETS:

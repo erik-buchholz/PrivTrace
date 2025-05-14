@@ -22,7 +22,7 @@ class ParSetter:
         parser.add_argument('--epsilon_partition', type=np.ndarray, default=np.array([0.2, 0.4, 0.4]))
         # this parameter indicates how many trajectories to generate
         parser.add_argument('--trajectory_number_to_generate', type=int, default=-1)
-        args = vars(parser.parse_args())
+        args = vars(parser.parse_args([]))  # disable parser
         if epsilon is not False:
             args['total_epsilon'] = epsilon
         if epsilon_partition is not False:
