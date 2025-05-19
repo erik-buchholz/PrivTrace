@@ -4,7 +4,12 @@ This is the project code for PrivTrace: Differentially Private Trajectory Synthe
 
 **Original Repository**: https://github.com/DpTrace/PrivTrace
 
-Instructions:
+## Observed Runtimes
+
+Porto (subsampled to 200'000 trajectories): 94 h
+GeoLife (as is): 44h
+
+## Instructions:
 
 1.install and use anaconda
 
