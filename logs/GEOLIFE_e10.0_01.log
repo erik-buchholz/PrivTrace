@@ -1,0 +1,21 @@
+2025-05-14 12:21:05,057 - [INFO]: Preparing data finished
+2025-05-14 12:21:22,216 - [INFO]: Discretization finished
+2025-05-14 12:21:22,216 - [INFO]: Usable State Number: 3811
+2025-05-14 12:21:22,216 - [INFO]: Grid Size: 61X61
+2025-05-14 13:02:22,605 - [INFO]: Markov model building finished
+2025-05-14 15:53:28,738 - [INFO]: Preparing data finished
+2025-05-14 15:53:46,643 - [INFO]: Discretization finished
+2025-05-14 15:53:46,643 - [INFO]: Usable State Number: 3811
+2025-05-14 15:53:46,644 - [INFO]: Grid Size: 61X61
+2025-05-14 16:02:49,150 - [INFO]: Preparing data finished
+2025-05-14 16:03:08,768 - [INFO]: Discretization finished
+2025-05-14 16:03:08,768 - [INFO]: Usable State Number: 3811
+2025-05-14 16:03:08,768 - [INFO]: Grid Size: 61X61
+2025-05-14 16:06:10,312 - [INFO]: Preparing data finished
+2025-05-14 16:06:29,946 - [INFO]: Discretization finished
+2025-05-14 16:06:29,946 - [INFO]: Usable State Number: 3811
+2025-05-14 16:06:29,946 - [INFO]: Grid Size: 61X61
+2025-05-14 16:56:58,624 - [INFO]: Markov model building finished
+2025-05-16 15:29:47,462 - [INFO]: Markov model filtering finished
+2025-05-16 15:29:50,546 - [INFO]: State trajectory generation finished
+2025-05-16 15:29:50,576 - [INFO]: Real trajectory generation finished

@@ -1,0 +1,16 @@
+2025-05-14 15:53:28,636 - [INFO]: Preparing data finished
+2025-05-14 15:53:46,461 - [INFO]: Discretization finished
+2025-05-14 15:53:46,461 - [INFO]: Usable State Number: 3805
+2025-05-14 15:53:46,462 - [INFO]: Grid Size: 61X61
+2025-05-14 16:02:48,910 - [INFO]: Preparing data finished
+2025-05-14 16:03:08,372 - [INFO]: Discretization finished
+2025-05-14 16:03:08,372 - [INFO]: Usable State Number: 3805
+2025-05-14 16:03:08,372 - [INFO]: Grid Size: 61X61
+2025-05-14 16:06:10,247 - [INFO]: Preparing data finished
+2025-05-14 16:06:29,830 - [INFO]: Discretization finished
+2025-05-14 16:06:29,830 - [INFO]: Usable State Number: 3805
+2025-05-14 16:06:29,830 - [INFO]: Grid Size: 61X61
+2025-05-14 16:56:35,321 - [INFO]: Markov model building finished
+2025-05-16 10:23:48,948 - [INFO]: Markov model filtering finished
+2025-05-16 10:23:52,179 - [INFO]: State trajectory generation finished
+2025-05-16 10:23:52,212 - [INFO]: Real trajectory generation finished

@@ -1,0 +1,10 @@
+2025-05-14 15:53:35,077 - [INFO]: Preparing data finished
+2025-05-14 16:02:56,293 - [INFO]: Preparing data finished
+2025-05-14 16:06:18,211 - [INFO]: Preparing data finished
+2025-05-14 16:08:39,826 - [INFO]: Discretization finished
+2025-05-14 16:08:39,827 - [INFO]: Usable State Number: 4710
+2025-05-14 16:08:39,827 - [INFO]: Grid Size: 61X61
+2025-05-14 20:39:28,124 - [INFO]: Markov model building finished
+2025-05-18 13:45:17,869 - [INFO]: Markov model filtering finished
+2025-05-18 13:45:47,904 - [INFO]: State trajectory generation finished
+2025-05-18 13:45:47,973 - [INFO]: Real trajectory generation finished
