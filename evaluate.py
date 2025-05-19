@@ -48,7 +48,8 @@ def run(dataset: str, fold: int, epsilon: float = EPSILON) -> None:
     file_handler.setLevel(logging.DEBUG)
     formatter = logging.Formatter("%(asctime)s - [%(levelname)s]: %(message)s")
     file_handler.setFormatter(formatter)
-    log.addHandler(file_handler)
+    # Add to root logger
+    logging.getLogger().addHandler(file_handler)
 
     input_filename = f"{dataset}_{fold}.dat"
     output_filename = f"outputs/{basename}_output.dat"
