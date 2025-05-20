@@ -35,13 +35,13 @@ class Divide:
         x_increase = 1 / x_divide_number * (rig - lef)
         y_increase = 1 / y_divide_number * (top - bot)
         divide_parameter1 = np.array([x_divide_number, y_divide_number, x_increase, y_increase])
-        log.debug(f"L1 Divide parameter: {divide_parameter1}")
+        log.info(f"L1 Divide parameter (= K): {divide_parameter1[0]}")
         return divide_parameter1
 
     def subdividing_parameter(self, noisy_density):
         initial_parameter = 200
         subdivide_parameter1 = int(np.ceil(np.sqrt(noisy_density / initial_parameter)))
-        log.debug(f"Subdivide parameter: {subdivide_parameter1}")
+        # log.info(f"Subdivide parameter: {subdivide_parameter1}")
         return subdivide_parameter1
 
 

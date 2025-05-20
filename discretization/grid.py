@@ -405,6 +405,7 @@ class Grid:
             if level1_cell_need_to_subdivide[cell_index]:
                 subdividing_number = self.subdividing_number(noisy_density[cell_index])
                 subdividing_parameter[cell_index] = subdividing_number
+        log.info(f"Subdividing parameter (=Kappa): {subdividing_parameter}")
         self.give_level2_parameter(subdividing_parameter)
 
     # this function initialize two parameter storage array for subdividing
