@@ -26,6 +26,7 @@ N_FOLDS = 5
 N_TRAJS = 3000  # Number of trajectories to generate for our evaluation
 EPSILON = 10.0
 epsilons = [10.0]
+
 c_parameters = {  # This is the c parameter used in the paper to compute K
     "Brinkhoff": 5000,
     "PORTO": 1200,
@@ -35,8 +36,10 @@ pop = {  # Population density for each dataset
     "PORTO": 1_310_000,  # Metropolitan Area of Porto
     "GEOLIFE": 	22_596_500  # Metropolitan Area of Beijing
 }
-level_1_parameter = False  # This equals K in the paper - we provide c instead and compute K from it
-level_2_parameter = False  # This equals kappa in the paper - we tried providing pop, but the equation in the paper
+
+# Whether we use these parameters or not
+LEVEL_1_PARAMETER = False  # This equals K in the paper - we provide c instead and compute K from it
+LEVEL_2_PARAMETER = False  # This equals kappa in the paper - we tried providing pop, but the equation in the paper
 # is incorrect, at least, the result doesn't make any sense.
 
 # Set up log
@@ -48,11 +51,23 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 
-def run(dataset: str, fold: int, epsilon: float = EPSILON) -> None:
+def run(dataset: str, fold: int, epsilon: float = EPSILON,
+        level_1_parameter: bool = LEVEL_1_PARAMETER,
+        level_2_parameter: bool = LEVEL_2_PARAMETER,
+        ) -> None:
     # Copy of main.py
+    if level_1_parameter:
+        c_param = c_parameters[dataset]
+    if level_2_parameter:
+        pop_param = pop[dataset]
 
     # Log to file
     basename= f"{dataset}_e{epsilon:.1f}_{fold:02d}"
+    # Append the other parameters if used
+    if level_1_parameter:
+        basename += f"custom-K"
+    if level_2_parameter:
+        basename += f"custom-Kappa"
     log_filename = Path("logs") / f"{basename}.log"
     file_handler = logging.FileHandler(log_filename)
     file_handler.setLevel(logging.DEBUG)
@@ -75,11 +90,10 @@ def run(dataset: str, fold: int, epsilon: float = EPSILON) -> None:
         output_file_name=output_filename,  # Output File
         epsilon=epsilon,  # Final Epsilon (e1 + e2 + e3)
         out_size=N_TRAJS,  # Number of trajectories to generate for our evaluation
+
         # We use the default values as the code and the paper are not consistent
-        # level1_parameter=level_1_parameter,  # Level 1 parameter
-        # level2_parameter=level_2_parameter,  # Level 2 parameter
-        # c_parameter=c_parameters[dataset],  # This is the c parameter used in the paper to compute K
-        # pop=pop[dataset],  # Population density for each dataset --> Not usable as the formula in the paper is wrong
+        c_parameter=c_param if level_1_parameter else False,  # c parameter
+        pop=pop_param if level_2_parameter else False,  # Population density
     )
 
     pc = ParameterCarrier(par)
@@ -135,6 +149,8 @@ def get_parser() -> ArgumentParser:
     parser.add_argument('-d', '--dataset', type=str, choices=DATASETS, required=True, help='Dataset to use')
     parser.add_argument('-f', '--fold', type=int, required=True, help='Fold number')
     parser.add_argument('-e', '--epsilon', type=float, default=EPSILON, help='Epsilon value')
+    # Use custom level 1 parameter
+    parser.add_argument('-c', '--custom-c', action='store_true', help='Use custom c/K parameter')
     # Enable Manual mode
     parser.add_argument('-m', '--manual', action='store_true', help='Enable manual mode')
     return parser
@@ -148,7 +164,7 @@ if __name__ == "__main__":
         # Only run geolife dataset with fold 1 and epsilon 10.0
         run(dataset="GEOLIFE", fold=6, epsilon=1000.0)
     elif args.manual:
-        run(dataset=args.dataset, fold=args.fold, epsilon=args.epsilon)
+        run(dataset=args.dataset, fold=args.fold, epsilon=args.epsilon, level_1_parameter=args.custom_c)
     else:
         processes = []
         for dataset in DATASETS:
