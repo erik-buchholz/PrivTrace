@@ -26,8 +26,18 @@ N_FOLDS = 5
 N_TRAJS = 3000  # Number of trajectories to generate for our evaluation
 EPSILON = 10.0
 epsilons = [10.0]
-level_1_parameter = False
-level_2_parameter = False
+c_parameters = {  # This is the c parameter used in the paper to compute K
+    "Brinkhoff": 5000,
+    "PORTO": 1200,
+    "GEOLIFE": 500,
+}
+pop = {  # Population density for each dataset
+    "PORTO": 1_310_000,  # Metropolitan Area of Porto
+    "GEOLIFE": 	22_596_500  # Metropolitan Area of Beijing
+}
+level_1_parameter = False  # This equals K in the paper - we provide c instead and compute K from it
+level_2_parameter = False  # This equals kappa in the paper - we tried providing pop, but the equation in the paper
+# is incorrect, at least, the result doesn't make any sense.
 
 # Set up log
 logging.basicConfig(
@@ -65,8 +75,11 @@ def run(dataset: str, fold: int, epsilon: float = EPSILON) -> None:
         output_file_name=output_filename,  # Output File
         epsilon=epsilon,  # Final Epsilon (e1 + e2 + e3)
         out_size=N_TRAJS,  # Number of trajectories to generate for our evaluation
-        level1_parameter=level_1_parameter,  # Level 1 parameter
-        level2_parameter=level_2_parameter,  # Level 2 parameter
+        # We use the default values as the code and the paper are not consistent
+        # level1_parameter=level_1_parameter,  # Level 1 parameter
+        # level2_parameter=level_2_parameter,  # Level 2 parameter
+        # c_parameter=c_parameters[dataset],  # This is the c parameter used in the paper to compute K
+        # pop=pop[dataset],  # Population density for each dataset --> Not usable as the formula in the paper is wrong
     )
 
     pc = ParameterCarrier(par)
@@ -82,7 +95,7 @@ def run(dataset: str, fold: int, epsilon: float = EPSILON) -> None:
     log.info("Discretization finished")
     log.info(f"Usable State Number: {grid.usable_state_number}")
     # Print the size of the grid
-    log.info(f"Grid Size: {len(grid.x_divide_bins)}X{len(grid.y_divide_bins)}")
+    log.info(f"Grid Size: {len(grid.x_divide_bins - 1)}X{len(grid.y_divide_bins - 1)}")
 
     # Step 2: Learn Markov Models
     mb1 = ModelBuilder(pc)

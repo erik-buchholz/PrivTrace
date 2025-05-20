@@ -12,7 +12,7 @@ class ParSetter:
         pass
 
     def set_up_args(self, dataset_file_name=None, epsilon=False, epsilon_partition=False, level1_parameter=False,
-                    level2_parameter=False, out_size: int = -1, output_file_name=None):
+                    level2_parameter=False, out_size: int = -1, output_file_name=None, c_parameter=False, pop=False):
         parser = argparse.ArgumentParser()
         parser.add_argument('--dataset_file_name', type=str, default=fname.dataset_file_name, help="Input File")
         parser.add_argument('-o', '--output' , type=str, default=None, help="Output File. Default is input file name + '_output.dat'")
@@ -28,8 +28,11 @@ class ParSetter:
         if epsilon_partition is not False:
             args['epsilon_partition'] = epsilon_partition
         if level1_parameter is not False:
-            args['level1_divide_inner_parameter'] = level1_parameter
+            # K in the paper - we provide c instead and compute K from it
+            # args['level1_divide_inner_parameter'] = level1_parameter
+            raise ValueError("level1_parameter is not used. Use c_parameter instead.")
         if level2_parameter is not False:
+            # kappa in the paper
             args['subdividing_inner_parameter'] = level2_parameter
         if dataset_file_name is not None:
             args['dataset_file_name'] = dataset_file_name
@@ -40,6 +43,10 @@ class ParSetter:
             args['trajectory_number_to_generate'] = out_size
         if output_file_name is not None:
             args['output'] = output_file_name
+        # This is the c parameter used in the paper to compute K
+        args['c_parameter'] = c_parameter  # If False, we use the standard version from the repository
+        # Population density for each dataset
+        args['pop'] = pop
 
         # Print Parameters
         printc("Input file name:", args['dataset_file_name'])
