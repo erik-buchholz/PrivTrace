@@ -30,9 +30,7 @@ for eps in "${EPS_WITHOUT_ARGS[@]}"; do
 
     # pane for fold 0  
     tmux send-keys "conda activate ptg" C-m  
-    tmux send-keys "${PYTHON} $SCRIPT -m --dataset PORTO   --fold 0 --epsilon $eps" C-m
-    tmux send-keys "${PYTHON} $SCRIPT -m --dataset GEOLIFE --fold 0 --epsilon $eps" C-m
-    tmux send-keys "read" C-m  
+    tmux send-keys "${PYTHON} $SCRIPT -m --dataset PORTO   --fold 0 --epsilon $eps; ${PYTHON} $SCRIPT -m --dataset GEOLIFE --fold 0 --epsilon $eps" C-m
 
     # panes for folds 1..4  
     for fold in $(seq 1 $((N_FOLDS - 1))); do  
@@ -41,9 +39,7 @@ for eps in "${EPS_WITHOUT_ARGS[@]}"; do
         tmux select-layout -t "$SESSION:$win" tiled  
 
         tmux send-keys "conda activate ptg" C-m  
-        tmux send-keys "${PYTHON} $SCRIPT -m --dataset PORTO   --fold $fold --epsilon $eps" C-m
-        tmux send-keys "${PYTHON} $SCRIPT -m --dataset GEOLIFE --fold $fold --epsilon $eps" C-m
-        tmux send-keys "read" C-m  
+        tmux send-keys "${PYTHON} $SCRIPT -m --dataset PORTO   --fold $fold --epsilon $eps; ${PYTHON} $SCRIPT -m --dataset GEOLIFE --fold $fold --epsilon $eps" C-m
     done  
 done  
 
@@ -55,9 +51,7 @@ for eps in "${EPS_WITH_ARGS[@]}"; do
 
     # pane for fold 0  
     tmux send-keys "conda activate ptg" C-m  
-    tmux send-keys "${PYTHON} $SCRIPT -m --dataset PORTO   --fold 0 --epsilon $eps $ARGS" C-m
-    tmux send-keys "${PYTHON} $SCRIPT -m --dataset GEOLIFE --fold 0 --epsilon $eps $ARGS" C-m
-    tmux send-keys "read" C-m  
+    tmux send-keys "${PYTHON} $SCRIPT -m --dataset PORTO   --fold 0 --epsilon $eps $ARGS; ${PYTHON} $SCRIPT -m --dataset GEOLIFE --fold 0 --epsilon $eps $ARGS" C-m
 
     # panes for folds 1..4  
     for fold in $(seq 1 $((N_FOLDS - 1))); do  
@@ -66,8 +60,6 @@ for eps in "${EPS_WITH_ARGS[@]}"; do
         tmux select-layout -t "$SESSION:$win" tiled  
 
         tmux send-keys "conda activate ptg" C-m  
-        tmux send-keys "${PYTHON} $SCRIPT -m --dataset PORTO   --fold $fold --epsilon $eps $ARGS" C-m
-        tmux send-keys "${PYTHON} $SCRIPT -m --dataset GEOLIFE --fold $fold --epsilon $eps $ARGS" C-m
-        tmux send-keys "read" C-m  
+        tmux send-keys "${PYTHON} $SCRIPT -m --dataset PORTO   --fold $fold --epsilon $eps $ARGS; ${PYTHON} $SCRIPT -m --dataset GEOLIFE --fold $fold --epsilon $eps $ARGS" C-m
     done  
 done
