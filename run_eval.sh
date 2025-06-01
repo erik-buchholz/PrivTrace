@@ -6,7 +6,7 @@ BASE_DIR=$(dirname "$(realpath "$0")")
 SESSION="PrivTrace"  
 
 SCRIPT="${BASE_DIR}/evaluate.py"
-PYTHON="/home/erik/miniconda3/envs/ptg/bin/python3"
+PYTHON="$HOME/miniconda3/envs/ptg/bin/python3"
 
 N_FOLDS=5  
 
